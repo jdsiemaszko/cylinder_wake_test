@@ -5,6 +5,9 @@ import pandas as pd
 import numpy as np
 import csv
 import re
+from pathlib import Path
+
+from utils import unpack_data
 
 filename = 'blobs_distribution_022500.csv'
 
@@ -12,6 +15,9 @@ case_dir = os.getcwd()
 input_dir = os.path.join(case_dir,"input_data")
 data_dir = os.path.join(case_dir,"data")
 plots_dir = os.path.join(case_dir,"plots")
+
+Path(data_dir).mkdir(parents=True, exist_ok=True)
+Path(plots_dir).mkdir(parents=True, exist_ok=True)
 
 input_path = os.path.join(input_dir, filename)
 

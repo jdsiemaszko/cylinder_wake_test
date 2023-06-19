@@ -1,3 +1,11 @@
+#---------------------------General Params-------------------------------------#
+
+
+case : "gridfill avrm rk4"
+
+
+
+
 #---------------------------Lagrangian Params-------------------------------------#
 
 xMin : [-0.5]         #minimum x for initial blobs
@@ -48,5 +56,5 @@ yMinPlot : -2.0       #minimum y to plot
 yMaxPlot : 2.0        #maximum y to plot
 
 writeInterval_plots : 250
-run_analytical_flag : True
+# run_analytical_flag : True
 plot_flag : True
