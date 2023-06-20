@@ -2,13 +2,19 @@
 
 
 case : "gridfill_avrm_fe"
-filename : 'input_data/blobs_distribution_006750.csv'
+# filename : 'input_data/blobs_distribution_006750.csv'
+# filename : 'input_data/blobs_distribution_002250.csv'
+# filename : 'input_data/blobs_distribution_022500.csv'
+filename : 'input_data/blobs_distribution_015750.csv'
 
+data_folder : 'data_1'
+plots_folder : 'plots_1'
 
 #--------------------------Time Params--------------------------------------#
-nTimeSteps : 10    #number of lagrangian time-steps
-writeInterval_plots : 1
-compression_stride : 5  # number of timesteps between compressions
+nTimeSteps : 100    #number of lagrangian time-steps
+writeInterval_plots : 5
+compression_stride : 20  # number of timesteps between compressions
+T0 : 0 # starting timestep
 
 deltaTc : 0.02      #lagrangian, convection time-step
 
@@ -31,6 +37,7 @@ gammaC : 1.0
 
   #Computation Params
 hardware : "gpu"
+# hardware : 'gpu'
 method : "direct"
 
   #Blob Control Params
@@ -64,7 +71,7 @@ compression_params : {'Csigma' : 1., 'margin' : 0.25}
 support_method : 'patch'
 support_params : {'radius' : 1.5, 'size_bound' : 500, 'x_bound': 10., 'sort' : True}
 
-compression_func_values: {'x0' : 10, 'y0' : 1., 'x1' : 70, 'y1' : 0.01}
+compression_func_values: {'x0' : 10, 'y0' : 0.95, 'x1' : 100, 'y1' : 0.1}
 
 #---------------------------Plot Params-------------------------------------#
 nPlotPoints : 100    #plot points in each direction

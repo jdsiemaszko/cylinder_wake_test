@@ -10,7 +10,7 @@ from pathlib import Path
 import blobs_solver2 as pHyFlow
 import matplotlib.pyplot as plt
 
-from utils import unpack_data, create_linear
+from utils import unpack_data, create_linear, isolate_wake
 
 arg = sys.argv
 configFile = arg[1]
@@ -36,8 +36,8 @@ config = yaml.load(open(os.path.join(configFile)),Loader=loader)
 # # ---------------------- Load Input Data and Directories ------
 
 case_dir = os.getcwd()
-data_dir = os.path.join(case_dir,"data")
-plots_dir = os.path.join(case_dir,"plots")
+data_dir = os.path.join(case_dir,config["data_folder"])
+plots_dir = os.path.join(case_dir,config["plots_folder"])
 
 input_path = os.path.join(case_dir, config["filename"])
 
@@ -71,6 +71,7 @@ core = config['core']
 
 deltaTc = config["deltaTc"]
 nTimeSteps = config["nTimeSteps"]
+T0 = config["T0"]
 
 compression_method = config["compression_method"]
 support_method = config["support_method"]
@@ -112,6 +113,7 @@ yShift = config['yShift']
 # # ------------- Load Particle Data -----------------
 
 x, y, g, sigma = unpack_data(input_path, core_size=core)
+# x, y, g, sigma = isolate_wake(x, y, g, sigma, support_params['x_bound'])
 
 wField = (x, y, g)
 
@@ -140,17 +142,19 @@ np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=0)), np.c
 
 
 # #---------------------- Time-Marching -----------------
-for timeStep in range(1,nTimeSteps+1):
+for timeStep in range(T0+1,nTimeSteps+1):
     time_start = timeit.default_timer()
-    blobs.evolve()
-
-    if timeStep%compression_stride == 0:
+    
+    if timeStep%compression_stride == 0 or timeStep == T0+1:
         print('----------------Performing Compression--------------')
+        nbefore = blobs.numBlobs
         blobs._merging()
-
+        nafter = blobs.numBlobs
+        print(f'removed {nbefore-nafter} particles')
+        print(f'current number of particles: {nafter}')
+    blobs.evolve()
     time_end = timeit.default_timer()
     print("Time to evolve in timeStep {} is {}".format(timeStep,time_end - time_start))
-
     evolution_time = time_end - time_start
     T = timeStep*deltaTc
 
@@ -235,7 +239,7 @@ if plot_flag == True:
             # yTicks = np.linspace(-2,2,5)
 
             fig, ax = plt.subplots(1,1,figsize=(6,6))
-            ax.set_aspect("equal")
+            # ax.set_aspect("equal")
             # ax.set_xticks(xTicks)
             # ax.set_yticks(yTicks)
             plt.grid(color = '#666666', which='major', linestyle = '--', linewidth = 0.5)
@@ -251,7 +255,7 @@ if plot_flag == True:
             plt.close(fig)
             
             fig, ax = plt.subplots(1,1,figsize=(6,6))
-            ax.set_aspect("equal")
+            # ax.set_aspect("equal")
             # ax.set_xticks(xTicks)
             # ax.set_yticks(yTicks)
             plt.grid(color = '#666666', which='major', linestyle = '--', linewidth = 0.5)
