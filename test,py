@@ -1,0 +1,4 @@
+import numpy as np
+
+sigma = np.arange(0., 1., 0.1)
+print(np.any(sigma[:] <= 0))

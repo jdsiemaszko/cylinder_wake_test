@@ -1,10 +1,16 @@
 #---------------------------General Params-------------------------------------#
 
 
-case : "gridfill avrm rk4"
+case : "gridfill_avrm_fe"
+filename : 'input_data/blobs_distribution_006750.csv'
 
 
+#--------------------------Time Params--------------------------------------#
+nTimeSteps : 10    #number of lagrangian time-steps
+writeInterval_plots : 1
+compression_stride : 5  # number of timesteps between compressions
 
+deltaTc : 0.02      #lagrangian, convection time-step
 
 #---------------------------Lagrangian Params-------------------------------------#
 
@@ -13,12 +19,13 @@ xMax : [0.5]          #maximum x for initial blobs
 yMin : [-0.5]         #minimum y for initial blobs
 yMax : [0.5]          #maximum y for initial blobs
 
-vInfx : 0.0           #freestream velocity in x direction
+vInfx : 10.0           #freestream velocity in x direction
 vInfy : 0.0           #freestream velocity in y direction
-sigma : 0.010              #blob core radius
-overlap : 2.0         #blobs' overlap ratio
-deltaTc : 0.02      #lagrangian, convection time-step
-nTimeSteps : 1000    #number of lagrangian time-steps
+core : 0.01       #size of all starting particles
+overlap : 1.
+
+
+
 nu : 0.001
 gammaC : 1.0
 
@@ -38,7 +45,7 @@ blobsRedistribute : 'all'
 method_diffusion : 'adaptive_vrm'
 
   #Time integration Params
-time_integration_method : 'rk4'
+time_integration_method : 'euler'
 
   #Kernel params
 kernel : 'gauss'
@@ -48,13 +55,24 @@ coreSize : 'variable'
 xShift : 0.0
 yShift : 0.0
 
+#--------------------------- Compression Params -------------------------------------#
+
+
+compression_method : 'gridfill'
+compression_params : {'Csigma' : 1., 'margin' : 0.25}
+
+support_method : 'patch'
+support_params : {'radius' : 1.5, 'size_bound' : 500, 'x_bound': 10., 'sort' : True}
+
+compression_func_values: {'x0' : 10, 'y0' : 1., 'x1' : 70, 'y1' : 0.01}
+
 #---------------------------Plot Params-------------------------------------#
 nPlotPoints : 100    #plot points in each direction
-xMinPlot : -2.0       #minimum x to plot
-xMaxPlot : 2.0       #maximum x to plot
+xMinPlot : 10.      #minimum x to plot
+xMaxPlot : 70.       #maximum x to plot
 yMinPlot : -2.0       #minimum y to plot
 yMaxPlot : 2.0        #maximum y to plot
 
-writeInterval_plots : 250
 # run_analytical_flag : True
 plot_flag : True
+
