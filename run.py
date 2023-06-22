@@ -25,10 +25,7 @@ loader.add_implicit_resolver(
     u'tag:yaml.org,2002:float',
     re.compile(u'''^(?:
      [-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+]?[0-9]+)?
-    |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)
-    |\\.[0-9_]+(?:[eE][-+][0-9]+)?
-    |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*
-    |[-+]?\\.(?:inf|Inf|INF)
+    |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)-
     |\\.(?:nan|NaN|NAN))$''', re.X),
     list(u'-+0123456789.'))
 config = yaml.load(open(os.path.join(configFile)),Loader=loader)
@@ -129,23 +126,24 @@ blobs = pHyFlow.blobs.Blobs(wField,vInf,nu,deltaTc,sigma,overlap,xShift,yShift,
 
 print(f'Initialized {blobs.numBlobs} Particles')
 
-header = ['Time', 'NoBlobs', 'Evolution_time', 'Circulation']
-with open('{}/times_{}.csv'.format(data_dir, case), 'w', encoding='UTF8') as f:
-    writer = csv.writer(f)
-    # write the header
-    writer.writerow(header)
+if T0 == 0:
+    header = ['Time', 'NoBlobs', 'Evolution_time', 'Circulation']
+    with open('{}/times_{}.csv'.format(data_dir, case), 'w', encoding='UTF8') as f:
+        writer = csv.writer(f)
+        # write the header
+        writer.writerow(header)
 
-ux, uy = blobs.evaluateVelocity(xplotflat,yplotflat)
-omega = blobs.evaluateVorticity(xplotflat,yplotflat)
-np.savetxt(os.path.join(data_dir,"results_{}_{n:06d}.csv".format(case,n=0)), np.c_[xplotflat,yplotflat,ux,uy,omega], delimiter=' ')
-np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=0)), np.c_[blobs.x, blobs.y, blobs.g, blobs.sigma], delimiter= ' ')
+    ux, uy = blobs.evaluateVelocity(xplotflat,yplotflat)
+    omega = blobs.evaluateVorticity(xplotflat,yplotflat)
+    np.savetxt(os.path.join(data_dir,"results_{}_{n:06d}.csv".format(case,n=0)), np.c_[xplotflat,yplotflat,ux,uy,omega], delimiter=' ')
+    np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=0)), np.c_[blobs.x, blobs.y, blobs.g, blobs.sigma], delimiter= ' ')
 
 
 # #---------------------- Time-Marching -----------------
-for timeStep in range(T0+1,nTimeSteps+1):
+for timeStep in range(T0,nTimeSteps+1):
     time_start = timeit.default_timer()
     
-    if timeStep%compression_stride == 0 or timeStep == T0+1:
+    if timeStep%compression_stride == 0 or timeStep == 0:
         print('----------------Performing Compression--------------')
         nbefore = blobs.numBlobs
         blobs._merging()
