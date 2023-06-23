@@ -89,8 +89,8 @@ xyPlot = np.column_stack((xplotflat, yplotflat))
 computationParams = {'hardware':config['hardware'], 'method':config['method']}
 
 blobControlParams = {'methodPopulationControl':config['method_popControl'],'typeOfThresholds':'relative', 'stepRedistribution':config['stepRedistribution'],\
-                     'stepPopulationControl':config['stepPopulationControl'], 'gThresholdLocal': config['gThresholdLocal'],\
-                     'gThresholdGlobal':config['gThresholdGlobal']}
+                     'stepPopulationControl':config['stepPopulationControl'], 'gThresholdLocal': float(config['gThresholdLocal']),\
+                     'gThresholdGlobal':float(config['gThresholdGlobal'])}
 
 blobDiffusionParams = {'method' : config['method_diffusion']}
 
@@ -140,17 +140,18 @@ if T0 == 0:
 
 
 # #---------------------- Time-Marching -----------------
-for timeStep in range(T0,nTimeSteps+1):
+for timeStep in range(T0+1,nTimeSteps+1):
     time_start = timeit.default_timer()
-    
-    if timeStep%compression_stride == 0 or timeStep == 0:
+    blobs.evolve()
+    if timeStep%compression_stride == 0:
         print('----------------Performing Compression--------------')
         nbefore = blobs.numBlobs
-        blobs._merging()
+        blobs._compress()
+        blobs.populationControl()
         nafter = blobs.numBlobs
         print(f'removed {nbefore-nafter} particles')
         print(f'current number of particles: {nafter}')
-    blobs.evolve()
+    
     time_end = timeit.default_timer()
     print("Time to evolve in timeStep {} is {}".format(timeStep,time_end - time_start))
     evolution_time = time_end - time_start
@@ -237,7 +238,7 @@ if plot_flag == True:
             # yTicks = np.linspace(-2,2,5)
 
             fig, ax = plt.subplots(1,1,figsize=(6,6))
-            # ax.set_aspect("equal")
+            ax.set_aspect("equal")
             # ax.set_xticks(xTicks)
             # ax.set_yticks(yTicks)
             plt.grid(color = '#666666', which='major', linestyle = '--', linewidth = 0.5)
@@ -253,7 +254,7 @@ if plot_flag == True:
             plt.close(fig)
             
             fig, ax = plt.subplots(1,1,figsize=(6,6))
-            # ax.set_aspect("equal")
+            ax.set_aspect("equal")
             # ax.set_xticks(xTicks)
             # ax.set_yticks(yTicks)
             plt.grid(color = '#666666', which='major', linestyle = '--', linewidth = 0.5)
