@@ -4,12 +4,12 @@
 case : "single_patch"
 filename : 'input_data/blobs_distribution_022500_4.csv'
 
-data_folder : 'data_single'
-plots_folder : 'plots_single'
+data_folder : 'data_single_2'
+plots_folder : 'plots_single_2'
 
 
 #--------------------------Time Params--------------------------------------#
-nTimeSteps : 1000    #number of lagrangian time-steps
+nTimeSteps : 500    #number of lagrangian time-steps
 writeInterval_plots : 25
 compression_stride : 100  # number of timesteps between compressions
 T0 : 0 # starting timestep
@@ -62,9 +62,10 @@ yShift : 0.0
 
 #--------------------------- Compression Params -------------------------------------#
 
+compression_flag : True
 
-compression_method : 'gridfill'
-compression_params : {'Csigma' : 1., 'margin' : 0.1}
+compression_method : 'remesh'
+compression_params : {'Csigma' : 1., 'margin' : 0.1, 'sigma_max' : 0.1, 'check' : True, 'radius_check' : 2.0}
 
 # support_method : 'patch'
 # support_params : {'radius' : 1.5, 'size_bound' : 500, 'x_bound': 10., 'sort' : True}
@@ -76,7 +77,7 @@ compression_func_values: {'x0' : 10, 'y0' : 0.95, 'x1' : 50, 'y1' : 0.1}
 #---------------------------Plot Params-------------------------------------#
 nPlotPoints : 100    #plot points in each direction
 xMinPlot : 10.      #minimum x to plot
-xMaxPlot : 70.       #maximum x to plot
+xMaxPlot : 35.       #maximum x to plot
 yMinPlot : -3.0       #minimum y to plot
 yMaxPlot : 3.0      #maximum y to plot
 

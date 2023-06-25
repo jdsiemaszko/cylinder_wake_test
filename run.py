@@ -70,6 +70,7 @@ deltaTc = config["deltaTc"]
 nTimeSteps = config["nTimeSteps"]
 T0 = config["T0"]
 
+compression_flag = config["compression_flag"]
 compression_method = config["compression_method"]
 support_method = config["support_method"]
 compression_params = config["compression_params"]
@@ -77,7 +78,8 @@ support_params = config["support_params"]
 
 compression_stride = config['compression_stride']
 
-compression_params['compression'] = create_linear(**config['compression_func_values'])
+# compression_params['compression'] = create_linear(**config['compression_func_values'])
+compression_params['compression'] = 0.95
 
 #--------------------Plot parameters--------------------------------
 xplot,yplot = np.meshgrid(np.linspace(xMinPlot,xMaxPlot,nPlotPoints),np.linspace(yMinPlot,yMaxPlot,nPlotPoints))
@@ -111,6 +113,8 @@ yShift = config['yShift']
 
 x, y, g, sigma = unpack_data(input_path, core_size=core)
 # x, y, g, sigma = isolate_wake(x, y, g, sigma, support_params['x_bound'])
+if coreSize == 'fixed':
+    sigma = float(sigma[0])
 
 wField = (x, y, g)
 
@@ -136,14 +140,17 @@ if T0 == 0:
     ux, uy = blobs.evaluateVelocity(xplotflat,yplotflat)
     omega = blobs.evaluateVorticity(xplotflat,yplotflat)
     np.savetxt(os.path.join(data_dir,"results_{}_{n:06d}.csv".format(case,n=0)), np.c_[xplotflat,yplotflat,ux,uy,omega], delimiter=' ')
-    np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=0)), np.c_[blobs.x, blobs.y, blobs.g, blobs.sigma], delimiter= ' ')
+    if coreSize == 'variable':
+        np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=0)), np.c_[blobs.x, blobs.y, blobs.g, blobs.sigma], delimiter= ' ')
+    else:
+        np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=0)), np.c_[blobs.x, blobs.y, blobs.g, np.full(blobs.x.shape,blobs.sigma)], delimiter= ' ')
 
 
 # #---------------------- Time-Marching -----------------
 for timeStep in range(T0+1,nTimeSteps+1):
     time_start = timeit.default_timer()
     blobs.evolve()
-    if timeStep%compression_stride == 0:
+    if timeStep%compression_stride == 0 and compression_flag:
         print('----------------Performing Compression--------------')
         nbefore = blobs.numBlobs
         blobs._compress()
@@ -169,7 +176,11 @@ for timeStep in range(T0+1,nTimeSteps+1):
         print(np.max(np.abs(omega)))
 
         np.savetxt(os.path.join(data_dir,"results_{}_{n:06d}.csv".format(case,n=timeStep)), np.c_[xplotflat,yplotflat,ux,uy,omega], delimiter=' ')
-        np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=timeStep)), np.c_[blobs.x, blobs.y, blobs.g, blobs.sigma], delimiter= ' ')
+        if coreSize == 'variable':
+            np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=timeStep)), np.c_[blobs.x, blobs.y, blobs.g, blobs.sigma], delimiter= ' ')
+        else:
+            np.savetxt(os.path.join(data_dir, "blobs_{}_{n:06d}.csv".format(case,n=timeStep)), np.c_[blobs.x, blobs.y, blobs.g, np.full(blobs.x.shape, blobs.sigma)], delimiter= ' ')
+
 
 # #-------------------- Plotting--------------------
 
