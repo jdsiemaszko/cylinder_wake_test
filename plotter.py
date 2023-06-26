@@ -11,11 +11,11 @@ import blobs_solver2 as pHyFlow
 import matplotlib.pyplot as plt
 
 case_dir = os.getcwd()
-data_dir = os.path.join(case_dir,'data_single_ref')
-plots_dir = os.path.join(case_dir,'plots_single_ref')
-case = "single_patch_ref"
+data_dir = os.path.join(case_dir,'data_double')
+plots_dir = os.path.join(case_dir,'plots_double')
+case = "dual_patch"
 gammaC = 0.
-nTimeSteps = 500
+nTimeSteps = 130
 writeInterval_plots = 25
 coreSize = 'variable'
 deltaTc = 0.02
@@ -57,7 +57,7 @@ plt.savefig("{}/circulation_error_{}.png".format(plots_dir,case), dpi=300, bbox_
 
 fig = plt.subplots(figsize=(6,6))
 index = np.arange(len(evolution_time))
-width = 0.8
+width = deltaTc
 lagrangian = plt.bar(index[1:]*deltaTc, evolution_time[1:], width)
 plt.ylabel('Time (s)')
 plt.xlabel('Simulation time (s)')
@@ -130,10 +130,12 @@ for timeStep in range(nTimeSteps+1):
 
             fig, ax = plt.subplots(1,1,figsize=(6,6))
             ax.scatter(blobs_x,blobs_y,c=blobs_g, s= blobs_sigma*30)
+            ax.set_aspect('equal')
             plt.savefig("{}/blobs_{}_{}.png".format(plots_dir,case,timeStep), dpi=300, bbox_inches="tight")
             plt.close(fig)
         else:
             fig, ax = plt.subplots(1,1,figsize=(6,6))
             ax.scatter(blobs_x,blobs_y,c=blobs_g, s=0.2)
+            ax.set_aspect('equal')
             plt.savefig("{}/blobs_{}_{}.png".format(plots_dir,case,timeStep), dpi=300, bbox_inches="tight")
             plt.close(fig)

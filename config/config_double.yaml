@@ -1,0 +1,83 @@
+#---------------------------General Params-------------------------------------#
+
+
+case : "dual_patch"
+filename : 'input_data/combined.csv'
+
+data_folder : 'data_double'
+plots_folder : 'plots_double'
+
+
+#--------------------------Time Params--------------------------------------#
+nTimeSteps : 500    #number of lagrangian time-steps
+writeInterval_plots : 25
+compression_stride : 100  # number of timesteps between compressions
+T0 : 0 # starting timestep
+
+deltaTc : 0.02      #lagrangian, convection time-step
+
+#---------------------------Lagrangian Params-------------------------------------#
+
+xMin : [-0.5]         #minimum x for initial blobs
+xMax : [0.5]          #maximum x for initial blobs
+yMin : [-0.5]         #minimum y for initial blobs
+yMax : [0.5]          #maximum y for initial blobs
+
+vInfx : 1.0           #freestream velocity in x direction
+vInfy : 0.0           #freestream velocity in y direction
+core : 0.01       #size of all starting particles
+overlap : 1.
+
+nu : 0.001
+gammaC : 1.0
+
+  #Computation Params
+hardware : "gpu"
+method : "direct"
+
+  #Blob Control Params
+method_popControl : 'implicit'
+stepRedistribution : 0
+stepPopulationControl : 1
+gThresholdLocal : 1e-12
+gThresholdGlobal : 1e-12
+blobsRedistribute : 'all'
+
+  #Blob Diffusion Params
+method_diffusion : 'adaptive_vrm'
+
+  #Time integration Params
+time_integration_method : 'rk4'
+
+  #Kernel params
+kernel : 'gauss'
+coreSize : 'variable'
+
+  #xShift,yShift
+xShift : 0.0
+yShift : 0.0
+
+#--------------------------- Compression Params -------------------------------------#
+
+compression_flag : True
+
+compression_method : 'remesh'
+compression_params : {'Csigma' : 1., 'margin' : 0.1, 'sigma_max' : 0.05, 'radius_check' : 1.2, 'type' : 'M4prime', 'ignore' : True, 'compression' : 0.8}
+
+# support_method : 'patch'
+# support_params : {'radius' : 1.5, 'size_bound' : 500, 'x_bound': 10., 'sort' : True}
+support_method : 'all'
+support_params : {}
+
+# compression_func_values: {'x0' : 10, 'y0' : 0.95, 'x1' : 50, 'y1' : 0.1}
+
+#---------------------------Plot Params-------------------------------------#
+nPlotPoints : 100    #plot points in each direction
+xMinPlot : 10.      #minimum x to plot
+xMaxPlot : 35.       #maximum x to plot
+yMinPlot : -3.0       #minimum y to plot
+yMaxPlot : 3.0      #maximum y to plot
+
+# run_analytical_flag : True
+plot_flag : True
+

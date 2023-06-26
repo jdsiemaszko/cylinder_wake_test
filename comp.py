@@ -54,8 +54,8 @@ evolution_time2 = times_ref_data['Evolution_time']
 circulation2 = times_ref_data['Circulation']
 
 fig, ax = plt.subplots(1,1,figsize=(6,6))
-ax.plot(time1,noBlobs1, label='Run w/ Compression')
-ax.plot(time2,noBlobs2, label='Run w/o Compression')
+ax.plot(time1,noBlobs1, label=case)
+ax.plot(time2,noBlobs2, label=case_ref)
 
 plt.grid(color = '#666666', which='major', linestyle = '--', linewidth = 0.5)
 plt.minorticks_on()
@@ -81,7 +81,7 @@ plt.savefig("{}/circulation_{}.png".format(plots_dir,case), dpi=300, bbox_inches
 
 fig = plt.subplots(figsize=(6,6))
 index = np.arange(len(evolution_time1))
-width = 0.8
+width = deltaTc
 lagrangian = plt.bar(index[1:nTimeSteps]*deltaTc, evolution_time1[1:nTimeSteps] - evolution_time2[1:nTimeSteps], width)
 plt.ylabel('Time (s)')
 plt.xlabel('Simulation time(s)')
@@ -173,12 +173,16 @@ for timeStep in range(nTimeSteps+1):
         # BEWARE OF SKETCHY SOLUTION FOR LEVELS
         e_abs = (omega.reshape(length,length) - omega_ref.reshape(length,length))
         e_abs_max = np.max(np.abs(e_abs))
-        cax = ax.contourf(xPlotMesh,yPlotMesh, e_abs,levels=np.arange(-e_abs_max, e_abs_max+0.005, 0.005),cmap='RdBu',extend="both")
-        cbar = fig.colorbar(cax,format="%.4f")
-        cbar.set_label("Absolute Vorticity Error (1/s)")
-        plt.tight_layout()
-        plt.savefig("{}/absolute_vorticity_error_{}_{}.png".format(plots_dir,case,timeStep), dpi=300, bbox_inches="tight")
-        plt.close(fig)
+        step = e_abs_max / 50
+        try:
+            cax = ax.contourf(xPlotMesh,yPlotMesh, e_abs ,levels=np.arange(-e_abs_max, e_abs_max+step, step),cmap='RdBu',extend="both")
+            cbar = fig.colorbar(cax,format="%.4f")
+            cbar.set_label("Absolute Vorticity Error (1/s)")
+            plt.tight_layout()
+            plt.savefig("{}/absolute_vorticity_error_{}_{}.png".format(plots_dir,case,timeStep), dpi=300, bbox_inches="tight")
+            plt.close(fig)
+        except:
+            pass
 
         fig, ax = plt.subplots(1,1,figsize=(12,6))
         ax.set_aspect("equal")
@@ -192,13 +196,16 @@ for timeStep in range(nTimeSteps+1):
         # BEWARE OF SKETCHY SOLUTION FOR LEVELS
         e_rel = (omega.reshape(length,length) - omega_ref.reshape(length,length))/ max(omega_ref) * 100
         e_rel_max = np.max(np.abs(e_rel))
-        cax = ax.contourf(xPlotMesh,yPlotMesh, ,levels=np.arange(-e_rel_max, e_rel_max+0.05, 0.05),cmap='RdBu',extend="both")
-        cbar = fig.colorbar(cax,format="%.4f")
-        cbar.set_label("Relative Vorticity Error (%)")
-        plt.tight_layout()
-        plt.savefig("{}/relative_vorticity_error_{}_{}.png".format(plots_dir,case,timeStep), dpi=300, bbox_inches="tight")
-        plt.close(fig)
-        
+        step_rel = e_rel_max/50
+        try:
+            cax = ax.contourf(xPlotMesh,yPlotMesh, e_rel ,levels=np.arange(-e_rel_max, e_rel_max+step_rel, step_rel),cmap='RdBu',extend="both")
+            cbar = fig.colorbar(cax,format="%.4f")
+            cbar.set_label("Relative Vorticity Error (%)")
+            plt.tight_layout()
+            plt.savefig("{}/relative_vorticity_error_{}_{}.png".format(plots_dir,case,timeStep), dpi=300, bbox_inches="tight")
+            plt.close(fig)
+        except:
+            pass
         # fig, ax = plt.subplots(1,1,figsize=(12,6))
         # ax.set_aspect("equal")
         # # ax.set_xticks(xTicks)

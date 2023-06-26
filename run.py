@@ -79,7 +79,7 @@ support_params = config["support_params"]
 compression_stride = config['compression_stride']
 
 # compression_params['compression'] = create_linear(**config['compression_func_values'])
-compression_params['compression'] = 0.95
+# compression_params['compression'] = 0.95
 
 #--------------------Plot parameters--------------------------------
 xplot,yplot = np.meshgrid(np.linspace(xMinPlot,xMaxPlot,nPlotPoints),np.linspace(yMinPlot,yMaxPlot,nPlotPoints))
@@ -222,7 +222,7 @@ if plot_flag == True:
 
     fig = plt.subplots(figsize=(6,6))
     index = np.arange(len(evolution_time))
-    width = 0.8
+    width = deltaTc
     lagrangian = plt.bar(index[1:]*deltaTc, evolution_time[1:], width)
     plt.ylabel('Time (s)')
     plt.xlabel('Simulation time (s)')
