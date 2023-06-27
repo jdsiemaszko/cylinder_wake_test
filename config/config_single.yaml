@@ -4,14 +4,14 @@
 case : "single_patch"
 filename : 'input_data/blobs_distribution_022500_4.csv'
 
-data_folder : 'data_single_2'
-plots_folder : 'plots_single_2'
+data_folder : 'data_single_3'
+plots_folder : 'plots_single_3'
 
 
 #--------------------------Time Params--------------------------------------#
 nTimeSteps : 500    #number of lagrangian time-steps
 writeInterval_plots : 25
-compression_stride : 100  # number of timesteps between compressions
+compression_stride : 250  # number of timesteps between compressions
 T0 : 0 # starting timestep
 
 deltaTc : 0.02      #lagrangian, convection time-step
@@ -31,11 +31,10 @@ overlap : 1.
 
 
 nu : 0.001
-gammaC : 1.0
+gammaC : 0.0
 
   #Computation Params
 hardware : "gpu"
-# hardware : 'gpu'
 method : "direct"
 
   #Blob Control Params
@@ -63,16 +62,17 @@ yShift : 0.0
 #--------------------------- Compression Params -------------------------------------#
 
 compression_flag : True
+compress_at_start : True
 
 compression_method : 'remesh'
-compression_params : {'Csigma' : 1., 'margin' : 0.1, 'sigma_max' : 0.1, 'check' : True, 'radius_check' : 2.0}
+compression_params : {'Csigma' : 1., 'margin' : 0.1, 'sigma_max' : 0.05, 'radius_check' : 1.2, 'compression' : 0.8, 'ignore' : False, 'type' : 'M4prime'}
 
 # support_method : 'patch'
 # support_params : {'radius' : 1.5, 'size_bound' : 500, 'x_bound': 10., 'sort' : True}
 support_method : 'all'
 support_params : {}
 
-compression_func_values: {'x0' : 10, 'y0' : 0.95, 'x1' : 50, 'y1' : 0.1}
+# compression_func_values: {'x0' : 10, 'y0' : 0.95, 'x1' : 50, 'y1' : 0.1}
 
 #---------------------------Plot Params-------------------------------------#
 nPlotPoints : 100    #plot points in each direction

@@ -11,11 +11,11 @@ import blobs_solver2 as pHyFlow
 import matplotlib.pyplot as plt
 
 case_dir = os.getcwd()
-data_dir = os.path.join(case_dir,'data_double')
-plots_dir = os.path.join(case_dir,'plots_double')
-case = "dual_patch"
+data_dir = os.path.join(case_dir,'data_single_ref')
+plots_dir = os.path.join(case_dir,'plots_single_ref')
+case = "single_patch_ref"
 gammaC = 0.
-nTimeSteps = 130
+nTimeSteps = 500
 writeInterval_plots = 25
 coreSize = 'variable'
 deltaTc = 0.02

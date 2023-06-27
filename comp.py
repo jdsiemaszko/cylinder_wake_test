@@ -12,9 +12,9 @@ from blobs_solver2.blobs.base.induced import vorticity
 import matplotlib.pyplot as plt
 
 case_dir = os.getcwd()
-data_dir = os.path.join(case_dir,'data_single_2')
+data_dir = os.path.join(case_dir,'data_single_3')
 ref_dir = os.path.join(case_dir,'data_single_ref_2')
-plots_dir =  os.path.join(case_dir, 'comparison_tutty')
+plots_dir =  os.path.join(case_dir, 'comparison_tutty_2')
 
 Path(plots_dir).mkdir(parents=True, exist_ok=True)
 

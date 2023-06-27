@@ -71,6 +71,7 @@ nTimeSteps = config["nTimeSteps"]
 T0 = config["T0"]
 
 compression_flag = config["compression_flag"]
+compress_at_start = config['compress_at_start']
 compression_method = config["compression_method"]
 support_method = config["support_method"]
 compression_params = config["compression_params"]
@@ -150,7 +151,7 @@ if T0 == 0:
 for timeStep in range(T0+1,nTimeSteps+1):
     time_start = timeit.default_timer()
     blobs.evolve()
-    if timeStep%compression_stride == 0 and compression_flag:
+    if (compress_at_start and timeStep ==1) or (compression_flag and timeStep%compression_stride==0):
         print('----------------Performing Compression--------------')
         nbefore = blobs.numBlobs
         blobs._compress()
@@ -295,11 +296,13 @@ if plot_flag == True:
 
                 fig, ax = plt.subplots(1,1,figsize=(6,6))
                 ax.scatter(blobs_x,blobs_y,c=blobs_g, s= blobs_sigma*30)
+                ax.set_aspect('equal')
                 plt.savefig("{}/blobs_{}_{}.png".format(plots_dir,case,timeStep), dpi=300, bbox_inches="tight")
                 plt.close(fig)
             else:
                 fig, ax = plt.subplots(1,1,figsize=(6,6))
                 ax.scatter(blobs_x,blobs_y,c=blobs_g, s=0.2)
+                ax.set_aspect('equal')
                 plt.savefig("{}/blobs_{}_{}.png".format(plots_dir,case,timeStep), dpi=300, bbox_inches="tight")
                 plt.close(fig)
 
